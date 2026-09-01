@@ -84,7 +84,8 @@ distancia) o frotando el sensor entre los dedos.
 
 ## Lógica del pulsador (inicio / reset)
 
-Un mismo pulsador (GPIO27, a GND) cumple dos funciones:
+Un mismo pulsador (GPIO21, a GND, con resistencia de pull-up externa)
+cumple dos funciones:
 
 1. **En IDLE**: arranca el sistema (BIT_RUNNING), solo si la puerta está
    cerrada.
@@ -126,7 +127,7 @@ COM(switch) -- GND
 NO(switch)  -- GPIO32 (pull-up interno)
 NC(switch)  -- GPIO33 (pull-up interno)
 
-Pulsador -- GPIO27 -- GND (pull-up interno)
+Pulsador -- GPIO21 -- GND (pull-up externo)
 
 LED verde    -- GPIO26 -- R 330 -- GND
 LED amarillo -- GPIO4  -- R 330 -- GND
@@ -171,7 +172,7 @@ WROOM-32:
   tienen pull-up/down interno). Por eso el sensor de temperatura, que
   solo necesita leer, va en GPIO34.
 
-Todos los pines usados (4, 14, 25, 26, 27, 32, 33, 34) son GPIO de
+Todos los pines usados (4, 14, 21, 25, 26, 32, 33, 34) son GPIO de
 propósito general sin ninguna de estas restricciones.
 
 ## Arquitectura FreeRTOS

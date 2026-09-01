@@ -18,7 +18,7 @@ static const int PIN_FAN_PWM        = 25;
 static const int PIN_LED_OK         = 26;
 static const int PIN_LED_HIGH       = 4;
 static const int PIN_LED_TRIP       = 14;
-static const int PIN_START_RESET_BT = 27;
+static const int PIN_START_RESET_BT = 21; // pull-up externo ya conectado
 static const int PIN_DOOR_NO        = 32;
 static const int PIN_DOOR_NC        = 33;
 
@@ -295,7 +295,7 @@ void setup() {
     pinMode(PIN_LED_OK, OUTPUT);
     pinMode(PIN_LED_HIGH, OUTPUT);
     pinMode(PIN_LED_TRIP, OUTPUT);
-    pinMode(PIN_START_RESET_BT, INPUT_PULLUP);
+    pinMode(PIN_START_RESET_BT, INPUT); // pull-up externo en el pulsador
     pinMode(PIN_DOOR_NO, INPUT_PULLUP);
     pinMode(PIN_DOOR_NC, INPUT_PULLUP);
 
