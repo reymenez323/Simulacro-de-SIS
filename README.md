@@ -116,12 +116,7 @@ Módulo KY-013:
   VCC (pin central) -- 3V3
   S                  -- GPIO34    (sensor de temperatura, divisor ya
                                     integrado en la placa: no agregar
-                                    resistencia externa. El divisor del
-                                    KY-013 tiene la R fija hacia VCC y
-                                    el NTC hacia GND, al revés de un
-                                    NTC discreto armado a mano; la
-                                    fórmula en leerTemperaturaC() ya
-                                    está ajustada a esa polaridad)
+                                    resistencia externa)
   -   (GND)          -- GND
 
 GPIO25 --1k-- Base (2N2222A)
