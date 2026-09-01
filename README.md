@@ -116,7 +116,15 @@ Módulo KY-013:
   VCC (pin central) -- 3V3
   S                  -- GPIO34    (sensor de temperatura, divisor ya
                                     integrado en la placa: no agregar
-                                    resistencia externa)
+                                    resistencia externa. El divisor
+                                    tiene la R fija hacia VCC y el NTC
+                                    hacia GND, al revés de un NTC
+                                    discreto armado a mano; la fórmula
+                                    en leerTemperaturaC() ya está
+                                    ajustada a esa polaridad. El valor
+                                    base puede necesitar calibración:
+                                    ver "Calibración del sensor KY-013"
+                                    más abajo)
   -   (GND)          -- GND
 
 GPIO25 --1k-- Base (2N2222A)
@@ -140,6 +148,20 @@ LED rojo     -- GPIO14 -- R 330 -- GND
 Si tu limit switch queda presionado con la puerta **abierta** en vez de
 cerrada, cambia `#define DOOR_LOGIC_INVERTIDA 1` en `src/main.cpp` en
 lugar de recablear.
+
+### Calibración del sensor KY-013
+
+La fórmula de Steinhart-Hart asume que la resistencia fija del módulo
+es exactamente 10 kΩ (`SERIES_RESISTOR` en `src/main.cpp`), pero en la
+práctica puede variar según el lote. Si la temperatura en reposo (sin
+calentar el sensor) no se acerca a la temperatura ambiente real:
+
+1. Mide la temperatura ambiente real con otro termómetro.
+2. Anota el valor de `[DEBUG] ADC crudo` en reposo (deja el log
+   correr unos segundos sin tocar el sensor).
+3. Con esos dos datos se puede recalcular `SERIES_RESISTOR` (o agregar
+   un offset de calibración) para que el valor en reposo coincida con
+   la referencia.
 
 ### Límite de corriente del 2N2222A
 

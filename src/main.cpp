@@ -57,7 +57,8 @@ float leerTemperaturaC() {
 
 #if USE_NTC
     // Ecuación de Beta: ADC -> resistencia -> temperatura
-    float resistencia = SERIES_RESISTOR * ((ADC_MAX / (float)adc) - 1.0f);
+    // Módulo KY-013: R fija (10k) de VCC a S, NTC de S a GND
+    float resistencia = SERIES_RESISTOR * ((float)adc / (ADC_MAX - (float)adc));
     float steinhart = resistencia / NTC_NOMINAL_RES;
     steinhart = log(steinhart);
     steinhart /= NTC_BETA;
