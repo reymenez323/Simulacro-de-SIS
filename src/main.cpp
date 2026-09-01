@@ -53,6 +53,7 @@ static ESP32PWM fanPwm;
 
 float leerTemperaturaC() {
     int adc = analogRead(PIN_SENSOR);
+    Serial.printf("[DEBUG] ADC crudo en GPIO%d = %d\n", PIN_SENSOR, adc);
 
 #if USE_NTC
     // Ecuación de Beta: ADC -> resistencia -> temperatura
