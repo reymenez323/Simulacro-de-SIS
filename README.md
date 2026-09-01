@@ -33,10 +33,12 @@ automático tras un disparo de seguridad" (IEC 61511).
 
 - [PlatformIO](https://platformio.org/) (extensión de VS Code o CLI)
 - Placa ESP32 (DevKit genérica, `esp32dev`)
-- Termistor NTC 10K (B=3950) + resistencia de 10 kΩ — bulbo pequeño,
-  responde rápido: sube de temperatura soplando aire caliente (secador
-  a distancia, ~35-45 °C) o frotándolo entre los dedos (fricción + calor
-  corporal, +5-10 °C sobre ambiente)
+- Módulo sensor de temperatura analógico KY-013 (termistor NTC 10K,
+  B=3950, con la resistencia divisora de 10 kΩ ya integrada en la
+  placa) — bulbo pequeño, responde rápido: sube de temperatura
+  soplando aire caliente (secador a distancia, ~35-45 °C) o
+  frotándolo entre los dedos (fricción + calor corporal, +5-10 °C
+  sobre ambiente)
 - Transistor NPN 2N2222A (como interruptor de baja lateral) + resistencia
   de base ~1 kΩ, resistencia de 10 kΩ y diodo 1N4007
 - Ventilador DC 5V, corriente ≤ ~150-200 mA (ver nota de límite de
@@ -110,11 +112,12 @@ del sensor, y el sistema lo trata como "puerta no confirmada cerrada"
 Conexionado:
 
 ```
-        3V3
-         |
-        NTC
-         |
-GPIO34 --+-- R 10k -- GND      (sensor de temperatura)
+Módulo KY-013:
+  VCC (pin central) -- 3V3
+  S                  -- GPIO34    (sensor de temperatura, divisor ya
+                                    integrado en la placa: no agregar
+                                    resistencia externa)
+  -   (GND)          -- GND
 
 GPIO25 --1k-- Base (2N2222A)
 Base --10k-- GND (pull-down, evita encendidos falsos al arrancar)
