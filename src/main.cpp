@@ -30,9 +30,9 @@ static const float SERIES_RESISTOR  = 10000.0f;
 static const float ADC_MAX          = 4095.0f;
 
 // Setpoints del SIS (°C)
-static const float SP_HIGH      = 32.0f; // enciende ventilador / alarma amarilla
-static const float SP_HIGH_HIGH = 40.0f; // disparo: para la máquina
-static const float TEMP_AMBIENT = 27.0f; // umbral para apagar alarma y permitir reset
+static const float SP_HIGH      = 21.0f; // enciende ventilador / alarma amarilla
+static const float SP_HIGH_HIGH = 23.0f; // disparo: para la máquina
+static const float TEMP_AMBIENT = 19.0f; // umbral para apagar alarma y permitir reset
 
 // PWM del ventilador (librería ESP32Servo / clase ESP32PWM)
 static const int PWM_FREQ_HZ = 5000;
@@ -56,7 +56,8 @@ float leerTemperaturaC() {
 
 #if USE_NTC
     // Ecuación de Beta: ADC -> resistencia -> temperatura
-    float resistencia = SERIES_RESISTOR * ((ADC_MAX / (float)adc) - 1.0f);
+    // Módulo KY-013: R fija (10k) de VCC a S, NTC de S a GND
+    float resistencia = SERIES_RESISTOR * ((float)adc / (ADC_MAX - (float)adc));
     float steinhart = resistencia / NTC_NOMINAL_RES;
     steinhart = log(steinhart);
     steinhart /= NTC_BETA;
