@@ -66,7 +66,7 @@ pio device monitor    # abre el monitor serial (115200 baud)
 |-----------|-----------|----------------------|----------|----------------------|----------|
 | IDLE      | apagado   | según temperatura*    | apagado  | según temperatura*   | detenida |
 | RUNNING   | fijo      | parpadea si T≥32°C    | apagado  | ON si T≥32°C, MAX si T≥40°C | corriendo |
-| STOPPED   | apagado   | parpadea hasta T≤27°C | fijo     | MAX si sigue caliente | detenida |
+| STOPPED   | apagado   | parpadea hasta T≤27°C | fijo hasta que sea seguro reiniciar | MAX si sigue caliente | detenida |
 
 \* El ventilador y el LED amarillo responden a la temperatura de forma
 independiente del estado de arranque de la máquina (protección térmica

@@ -32,13 +32,13 @@ static const float ADC_MAX          = 4095.0f;
 // Setpoints del SIS (°C)
 static const float SP_HIGH      = 35.0f; // enciende ventilador / alarma amarilla
 static const float SP_HIGH_HIGH = 50.0f; // disparo: para la máquina
-static const float TEMP_AMBIENT = 30.0f; // umbral para apagar alarma y permitir reset
+static const float TEMP_AMBIENT = 32.0f; // umbral para apagar alarma y permitir reset
 
 // PWM del ventilador (librería ESP32Servo / clase ESP32PWM)
 static const int PWM_FREQ_HZ = 5000;
 static const float DUTY_OFF  = 0.0f;
-static const float DUTY_HIGH = 0.35f; // ~35% velocidad moderada
-static const float DUTY_MAX  = 0.50f; // tope de velocidad: 50% máximo
+static const float DUTY_HIGH = 0.55f; // ~35% velocidad moderada
+static const float DUTY_MAX  = 0.60f; // tope de velocidad: 50% máximo
 
 static const TickType_t BLINK_PERIOD = pdMS_TO_TICKS(300);
 
@@ -198,8 +198,9 @@ void TaskActuators(void *pvParameters) {
     for (;;) {
         xQueuePeek(tempQueue, &temp, 0);
         EventBits_t estado = xEventGroupGetBits(sisEvents);
-        bool corriendo = (estado & BIT_RUNNING) != 0;
-        bool detenida  = (estado & BIT_STOPPED) != 0;
+        bool corriendo     = (estado & BIT_RUNNING) != 0;
+        bool detenida      = (estado & BIT_STOPPED) != 0;
+        bool puertaAbierta = (estado & BIT_DOOR_OPEN) != 0;
 
         if (!alarmaAlta && temp >= SP_HIGH) {
             alarmaAlta = true;
@@ -235,7 +236,11 @@ void TaskActuators(void *pvParameters) {
             digitalWrite(PIN_LED_HIGH, LOW);
         }
 
-        digitalWrite(PIN_LED_TRIP, detenida ? HIGH : LOW);
+        // Se apaga en cuanto las condiciones de reinicio ya son seguras
+        // (puerta cerrada y temperatura en ambiente), aunque todavia no
+        // se haya presionado el pulsador.
+        bool listaParaReiniciar = !puertaAbierta && (temp <= TEMP_AMBIENT);
+        digitalWrite(PIN_LED_TRIP, (detenida && !listaParaReiniciar) ? HIGH : LOW);
 
         vTaskDelay(periodo);
     }
