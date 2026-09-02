@@ -151,17 +151,23 @@ lugar de recablear.
 
 ### Calibración del sensor KY-013
 
-La fórmula de Steinhart-Hart asume que la resistencia fija del módulo
-es exactamente 10 kΩ (`SERIES_RESISTOR` en `src/main.cpp`), pero en la
-práctica puede variar según el lote. Si la temperatura en reposo (sin
-calentar el sensor) no se acerca a la temperatura ambiente real:
+La fórmula de Steinhart-Hart asume un valor para la resistencia fija
+del módulo (`SERIES_RESISTOR` en `src/main.cpp`), pero varía según el
+lote — en este módulo específico resultó ser ~1020 Ω, no los 10 kΩ
+nominales de un termistor NTC10K genérico. El valor actual se calibró
+asumiendo 25 °C con el sensor en reposo (ADC≈3716). Si tu módulo da
+otra lectura en reposo, o quieres una calibración más precisa contra
+un termómetro de referencia:
 
 1. Mide la temperatura ambiente real con otro termómetro.
 2. Anota el valor de `[DEBUG] ADC crudo` en reposo (deja el log
    correr unos segundos sin tocar el sensor).
-3. Con esos dos datos se puede recalcular `SERIES_RESISTOR` (o agregar
-   un offset de calibración) para que el valor en reposo coincida con
-   la referencia.
+3. Recalcula `SERIES_RESISTOR` con:
+   `SERIES_RESISTOR = R_objetivo / (adc / (ADC_MAX - adc))`
+   donde `R_objetivo` es la resistencia NTC esperada a la temperatura
+   de referencia (10 kΩ a 25 °C si `NTC_NOMINAL_RES`/`NTC_BETA` no
+   cambian, o el valor que da la ecuación de Beta para tu temperatura
+   real).
 
 ### Límite de corriente del 2N2222A
 

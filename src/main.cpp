@@ -26,13 +26,13 @@ static const int PIN_DOOR_NC        = 33;
 static const float NTC_NOMINAL_RES  = 10000.0f;
 static const float NTC_NOMINAL_TEMP = 25.0f;
 static const float NTC_BETA         = 3950.0f;
-static const float SERIES_RESISTOR  = 10000.0f;
+static const float SERIES_RESISTOR  = 1020.0f; // calibrado con ADC en reposo ~3716 = 25 C
 static const float ADC_MAX          = 4095.0f;
 
 // Setpoints del SIS (°C)
-static const float SP_HIGH      = 21.0f; // enciende ventilador / alarma amarilla
-static const float SP_HIGH_HIGH = 23.0f; // disparo: para la máquina
-static const float TEMP_AMBIENT = 19.0f; // umbral para apagar alarma y permitir reset
+static const float SP_HIGH      = 10.0f; // enciende ventilador / alarma amarilla
+static const float SP_HIGH_HIGH = 20.0f; // disparo: para la máquina
+static const float TEMP_AMBIENT = 1.0f; // umbral para apagar alarma y permitir reset
 
 // PWM del ventilador (librería ESP32Servo / clase ESP32PWM)
 static const int PWM_FREQ_HZ = 5000;
