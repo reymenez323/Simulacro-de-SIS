@@ -30,9 +30,9 @@ static const float SERIES_RESISTOR  = 1020.0f; // calibrado con ADC en reposo ~3
 static const float ADC_MAX          = 4095.0f;
 
 // Setpoints del SIS (°C)
-static const float SP_HIGH      = 10.0f; // enciende ventilador / alarma amarilla
-static const float SP_HIGH_HIGH = 20.0f; // disparo: para la máquina
-static const float TEMP_AMBIENT = 1.0f; // umbral para apagar alarma y permitir reset
+static const float SP_HIGH      = 39.0f; // enciende ventilador / alarma amarilla
+static const float SP_HIGH_HIGH = 35.0f; // disparo: para la máquina
+static const float TEMP_AMBIENT = 30.0f; // umbral para apagar alarma y permitir reset
 
 // PWM del ventilador (librería ESP32Servo / clase ESP32PWM)
 static const int PWM_FREQ_HZ = 5000;
@@ -193,6 +193,8 @@ void TaskActuators(void *pvParameters) {
     float temp = 25.0f;
     const TickType_t periodo = pdMS_TO_TICKS(100);
     bool alarmaAlta = false; // latch: se activa en SP_HIGH, se libera en TEMP_AMBIENT
+    float dutyActual = 0.0f;
+    const float RAMP_STEP = 0.15f; // por tick (100 ms): 0->100% en ~0.7 s, evita pico de arranque
 
     for (;;) {
         xQueuePeek(tempQueue, &temp, 0);
@@ -206,14 +208,24 @@ void TaskActuators(void *pvParameters) {
             alarmaAlta = false;
         }
 
-        // Ventilador: responde solo a la temperatura, sin importar el estado
+        // Ventilador: responde solo a la temperatura, sin importar el estado.
+        // Se rampea el duty en vez de saltar de golpe, para suavizar el pico
+        // de corriente de arranque del motor.
+        float dutyObjetivo;
         if (temp >= SP_HIGH_HIGH) {
-            fanPwm.writeScaled(DUTY_MAX);
+            dutyObjetivo = DUTY_MAX;
         } else if (temp >= SP_HIGH) {
-            fanPwm.writeScaled(DUTY_HIGH);
+            dutyObjetivo = DUTY_HIGH;
         } else {
-            fanPwm.writeScaled(DUTY_OFF);
+            dutyObjetivo = DUTY_OFF;
         }
+
+        if (dutyActual < dutyObjetivo) {
+            dutyActual = min(dutyObjetivo, dutyActual + RAMP_STEP);
+        } else if (dutyActual > dutyObjetivo) {
+            dutyActual = max(dutyObjetivo, dutyActual - RAMP_STEP);
+        }
+        fanPwm.writeScaled(dutyActual);
 
         digitalWrite(PIN_LED_OK, (corriendo && !detenida) ? HIGH : LOW);
 

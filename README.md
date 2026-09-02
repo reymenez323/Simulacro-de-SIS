@@ -184,6 +184,25 @@ ventilador antes de conectarlo:
   corriente (TIP31, BD139) o un MOSFET, y bajar `Rb` si el hFE del
   transistor usado es menor.
 
+### Brownout / reinicios del ESP32 al arrancar el ventilador
+
+Si el ESP32 se reinicia justo cuando el ventilador arranca, es un
+brownout: el pico de corriente de arranque del motor (varias veces su
+corriente nominal en régimen) hunde la tensión de la fuente y el
+detector de brownout del ESP32 lo resetea. La causa casi siempre es
+alimentar el ventilador desde el mismo USB/riel que el ESP32.
+
+- **Solución principal**: alimenta el ventilador desde una fuente
+  externa separada (batería, adaptador de pared), con el GND común al
+  ESP32 (ya indicado en el diagrama de arriba) — no desde el mismo
+  puerto/cable que programa al ESP32.
+- **Refuerzo**: un capacitor electrolítico de 220-1000 µF en paralelo
+  con los terminales del ventilador amortigua el pico de arranque.
+- El firmware además rampea el PWM del ventilador en vez de saltar de
+  golpe a 51%/100% (`TaskActuators` en `src/main.cpp`, ~0.7 s de
+  rampa), lo que reduce el pico pero no lo elimina — no sustituye la
+  fuente separada.
+
 ### Pines evitados a propósito (ESP32-WROOM-32)
 
 Ningún pin de este proyecto cae en las categorías riesgosas del
