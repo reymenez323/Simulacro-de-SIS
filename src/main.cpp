@@ -30,8 +30,8 @@ static const float SERIES_RESISTOR  = 1020.0f; // calibrado con ADC en reposo ~3
 static const float ADC_MAX          = 4095.0f;
 
 // Setpoints del SIS (°C)
-static const float SP_HIGH      = 39.0f; // enciende ventilador / alarma amarilla
-static const float SP_HIGH_HIGH = 35.0f; // disparo: para la máquina
+static const float SP_HIGH      = 35.0f; // enciende ventilador / alarma amarilla
+static const float SP_HIGH_HIGH = 39.0f; // disparo: para la máquina
 static const float TEMP_AMBIENT = 30.0f; // umbral para apagar alarma y permitir reset
 
 // PWM del ventilador (librería ESP32Servo / clase ESP32PWM)
@@ -53,7 +53,6 @@ static ESP32PWM fanPwm;
 
 float leerTemperaturaC() {
     int adc = analogRead(PIN_SENSOR);
-    Serial.printf("[DEBUG] ADC crudo en GPIO%d = %d\n", PIN_SENSOR, adc);
 
 #if USE_NTC
     // Ecuación de Beta: ADC -> resistencia -> temperatura
@@ -159,7 +158,7 @@ void TaskDoor(void *pvParameters) {
 
 void TaskLogic(void *pvParameters) {
     float temp = 25.0f;
-    const TickType_t periodo = pdMS_TO_TICKS(200);
+    const TickType_t periodo = pdMS_TO_TICKS(100);
 
     for (;;) {
         if (xQueuePeek(tempQueue, &temp, 0) != pdTRUE) {
