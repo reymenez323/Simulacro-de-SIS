@@ -31,14 +31,14 @@ static const float ADC_MAX          = 4095.0f;
 
 // Setpoints del SIS (°C)
 static const float SP_HIGH      = 35.0f; // enciende ventilador / alarma amarilla
-static const float SP_HIGH_HIGH = 39.0f; // disparo: para la máquina
+static const float SP_HIGH_HIGH = 50.0f; // disparo: para la máquina
 static const float TEMP_AMBIENT = 30.0f; // umbral para apagar alarma y permitir reset
 
 // PWM del ventilador (librería ESP32Servo / clase ESP32PWM)
 static const int PWM_FREQ_HZ = 5000;
 static const float DUTY_OFF  = 0.0f;
-static const float DUTY_HIGH = 0.51f; // ~51% velocidad moderada
-static const float DUTY_MAX  = 1.0f;  // 100% velocidad máxima
+static const float DUTY_HIGH = 0.35f; // ~35% velocidad moderada
+static const float DUTY_MAX  = 0.50f; // tope de velocidad: 50% máximo
 
 static const TickType_t BLINK_PERIOD = pdMS_TO_TICKS(300);
 
