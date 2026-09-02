@@ -158,7 +158,7 @@ void TaskDoor(void *pvParameters) {
 
 void TaskLogic(void *pvParameters) {
     float temp = 25.0f;
-    const TickType_t periodo = pdMS_TO_TICKS(100);
+    const TickType_t periodo = pdMS_TO_TICKS(500);
 
     for (;;) {
         if (xQueuePeek(tempQueue, &temp, 0) != pdTRUE) {
